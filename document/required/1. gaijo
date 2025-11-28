@@ -1,0 +1,7 @@
+1. Loggin ko cần quên mật khẩu
+2. logiin thành công lưu access token vào storage
+    Lấy nó khi call api khác
+3. Có màn hình slash
+4. Có menu
+5. Có log, log xóa data trước 30 ngày
+6. Xem được account info
