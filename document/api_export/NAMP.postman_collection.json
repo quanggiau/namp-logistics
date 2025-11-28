@@ -1,0 +1,86 @@
+{
+	"info": {
+		"_postman_id": "2f1157b4-337d-4e5b-8fd7-9707bcdda017",
+		"name": "NAMP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47583332"
+	},
+	"item": [
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"pv_nam@brycen.com.vn\",\r\n    \"password\": \"ZaNbQcdn\",\r\n    \"honeypot\": null,\r\n    \"isChecked\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://149.28.140.21:3000/api/user/login",
+					"protocol": "http",
+					"host": [
+						"149",
+						"28",
+						"140",
+						"21"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"user",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEzMiwicm9sIjoiIiwidXNlcm5hbWUiOiJwdl9uYW0iLCJlbWFpbCI6InB2X25hbUBicnljZW4uY29tLnZuIiwiY21wbnljZCI6InB2X25hbSIsImlhdCI6MTc2NDMwMjEyNCwiZXhwIjoxNzY0Mzg4NTI0fQ.KU2W-zRcDaa3PnXqoJBcKifKP41dOVNWLjRlK30WgfI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"pageSize\": 10,\r\n    \"pageNum\": 1,\r\n    \"filters\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://149.28.140.21:3000/api/spot0030hl/spot0030hlFindCondition",
+					"protocol": "http",
+					"host": [
+						"149",
+						"28",
+						"140",
+						"21"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"spot0030hl",
+						"spot0030hlFindCondition"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
