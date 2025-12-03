@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:logistics/app/screens/002_home_screen/home_screen.dart';
 import 'package:logistics/app/screens/006_login_screen/login_screen.dart';
+import 'package:logistics/app/services/auth_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -10,15 +12,24 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final _authService = AuthService();
+  
   @override
   void initState() {
     super.initState();
-    _navigateToHome();
+    _checkLoginStatus();
   }
 
-  void _navigateToHome() async {
-    await Future.delayed(const Duration(seconds: 5));
-    Get.offAll(() => const LoginScreen());
+  Future<void> _checkLoginStatus() async {
+    await Future.delayed(const Duration(seconds: 3)); 
+    
+    final isLoggedIn = await _authService.isLoggedIn();
+    
+    if (isLoggedIn) {
+      Get.offAll(() => const HomeScreen());
+    } else {
+      Get.offAll(() => const LoginScreen());
+    }
   }
 
   @override

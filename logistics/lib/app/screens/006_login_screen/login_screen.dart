@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:logistics/app/screens/002_home_screen/home_screen.dart';
+import 'package:logistics/app/services/auth_service.dart';
 import 'package:logistics/app/services/logger.dart';
 import 'package:logistics/app/widgets/template/main_template.dart';
 
@@ -12,14 +15,68 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   static bool _isChecked = false;
   bool _isPasswordVisible = false;
-  final _usernameController = TextEditingController();
+  bool _isLoading = false;
+
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _authService = AuthService();
 
   @override
   void dispose() {
-    _usernameController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  /// Login 
+  Future<void> _handleLogin() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final response = await _authService.login(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+        isChecked: _isChecked,
+      );
+
+      if (response.isSuccess) {
+        // Show success message
+        Get.snackbar(
+          'Thành công',
+          'Đăng nhập thành công!',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+        );
+
+        // Navigate to home screen
+        Get.offAll(() => const HomeScreen());
+      } else {
+        // Show error message
+        Get.snackbar(
+          'Lỗi',
+          response.msg,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+        );
+      }
+    } catch (e) {
+      logger.e('Login error: $e');
+      Get.snackbar(
+        'Lỗi',
+        'Đã xảy ra lỗi. Vui lòng thử lại!',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.TOP,
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -77,8 +134,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
             const SizedBox(height: 40),
 
-            TextField(
-              controller: _usernameController,
+            TextFormField(
+              controller: _emailController,
               decoration: InputDecoration(
                 labelText: 'Email',
                 hintText: 'Nhập email của bạn',
@@ -104,11 +161,17 @@ class _LoginScreenState extends State<LoginScreen> {
                 fillColor: Colors.grey[50],
               ),
               keyboardType: TextInputType.emailAddress,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Vui lòng nhập tên đăng nhập';
+                }
+                return null;
+              },
             ),
 
             const SizedBox(height: 20),
 
-            TextField(
+            TextFormField(
               controller: _passwordController,
               decoration: InputDecoration(
                 labelText: 'Mật khẩu',
@@ -148,11 +211,20 @@ class _LoginScreenState extends State<LoginScreen> {
                 fillColor: Colors.grey[50],
               ),
               obscureText: !_isPasswordVisible,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Vui lòng nhập mật khẩu';
+                }
+                if (value.length < 6) {
+                  return 'Mật khẩu phải có ít nhất 6 ký tự';
+                }
+                return null;
+              },
             ),
 
             const SizedBox(height: 16),
 
-           Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Flexible(
@@ -200,10 +272,7 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 56,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [
-                    Colors.deepPurple[700]!,
-                    Colors.deepPurple[500]!,
-                  ],
+                  colors: [Colors.deepPurple[700]!, Colors.deepPurple[500]!],
                 ),
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
@@ -215,13 +284,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
               child: ElevatedButton(
-                onPressed: () {
-                  logger.i('Login button pressed');
-                  logger.i('Username: ${_usernameController.text}');
-                  logger.i('Password: ${_passwordController.text}');
-                  logger.i('Remember me: $_isChecked');
-                  
-                },
+                onPressed: _isLoading ? null : _handleLogin,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.transparent,
                   shadowColor: Colors.transparent,
@@ -229,15 +292,24 @@ class _LoginScreenState extends State<LoginScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: const Text(
-                  'ĐĂNG NHẬP',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.2,
-                    color: Colors.white,
-                  ),
-                ),
+                child: _isLoading
+                    ? const SizedBox(
+                        height: 24,
+                        width: 24,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const Text(
+                        'ĐĂNG NHẬP',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.2,
+                          color: Colors.white,
+                        ),
+                      ),
               ),
             ),
           ],

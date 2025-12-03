@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
       trailingWidget: const Icon(Icons.more_vert),
       useAppBarBottomBorder: true,
       bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed, // ensure all items are displayed
+        type: BottomNavigationBarType.fixed, // Ensure all items are displayed
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined),
